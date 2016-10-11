@@ -16,6 +16,7 @@ def compute_gradient(y, tx, w):
 
     # Value of the MSE loss (or cost) function
     loss = costs.compute_loss(y, tx, w)
+    return gradient, loss
 
 
 def gradient_descent(y, tx, initial_w, max_iters, gamma):
