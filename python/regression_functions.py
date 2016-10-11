@@ -24,6 +24,7 @@ def least_squares_SGD(y, tx, gamma, max_iters):
     
     # initalization of the weights with zeros
     w_initial = np.array(np.zeros(tx.shape[1]))
+    batch_size = 1
     # get the losses and weights for every iteration
     sgd_losses, sgd_ws = sgd.stochastic_gradient_descent(y, tx, w_initial, batch_size, max_iters, gamma)
     # take the best values
