@@ -67,7 +67,6 @@ def bias_variance_decomposition_visualization_ridge(lambdas, rmse_tr, rmse_te):
         'b',
         linestyle="-",
         color=([0.7, 0.7, 1]),
-        label='train',
         linewidth=0.3)
     plt.plot(
         lambdas,
@@ -75,25 +74,26 @@ def bias_variance_decomposition_visualization_ridge(lambdas, rmse_tr, rmse_te):
         'r',
         linestyle="-",
         color=[1, 0.7, 0.7],
-        label='test',
         linewidth=0.3)
     plt.plot(
         lambdas,
         rmse_tr_mean.T,
         'b',
         linestyle="-",
-        label='train',
+        label='mean train',
         linewidth=3)
     plt.plot(
         lambdas,
         rmse_te_mean.T,
         'r',
         linestyle="-",
-        label='test',
+        label='mean test',
         linewidth=3)
     plt.xlabel("lambdas")
     plt.ylabel("error")
     plt.xscale('log')
+    plt.legend(loc=2)
+    plt.grid(True)
     plt.title("Bias-Variance Decomposition")
     plt.savefig("bias_variance")
 

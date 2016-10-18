@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-#Ridge Regression
-
 import numpy as np
 from costs import compute_loss
 
