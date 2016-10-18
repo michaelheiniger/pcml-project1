@@ -17,3 +17,4 @@ def replace_by_mean(tX):
         new_tX[:, col][np.logical_not(idx)] = mean_col
     
     return new_tX
+
