@@ -93,3 +93,6 @@ data/
 
 # folder created and used by PyCharm
 .idea/
+
+
+*.png
