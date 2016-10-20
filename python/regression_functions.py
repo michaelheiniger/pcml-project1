@@ -3,12 +3,13 @@
 import numpy as np
 import gradient_descent as gd
 import stochastic_gradient_descent as sgd
+from costs import *
 
 def least_squares_GD(y, tx, gamma, max_iters):
     """ Linear Regression using Gradient Descent"""
     
     # initialization of the weights with zeros
-    w_initial = np.array(np.zeros(tx.shape[1]))
+    w_initial = np.zeros(tx.shape[1])
     # get the losses and weights for every iteration
     gd_losses, gd_ws = gd.gradient_descent(y, tx, w_initial, max_iters, gamma)
     # take the best values
@@ -33,15 +34,25 @@ def least_squares_SGD(y, tx, gamma, max_iters):
     
     return opt_weights, opt_loss
 
-
-
 def least_squares(y, tx):
-    # TODO Sandro
-    raise NotImplementedError
+    """calculate the least squares. returns the weights and the mse"""
+    tx_T = tx.transpose()
+    w = np.linalg.solve(tx_T @ tx, tx_T @ y) #robust solution
+    mse = compute_loss(y,tx,w)
+    return w, mse
 
 def ridge_regression(y, tx, lambda_):
     # TODO Sandro
-    raise NotImplementedError
+    tx_T = tx.transpose()
+    N = tx.shape[0]
+    D = tx.shape[1]
+    lamb_prime = lambda_ * 2 * N
+    Id = np.eye(D)
+    # weights and mse
+    w = np.linalg.solve(tx_T.dot(tx) + lamb_prime * Id, tx_T.dot(y))  # robust solution
+    mse = compute_loss(y, tx, w)
+    return w, mse
+
 
 def logistic_regression(y, tx, gamma, max_iters):
     # TODO Michael
