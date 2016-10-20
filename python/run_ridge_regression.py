@@ -17,7 +17,7 @@ def cross_validation(y, x, k_indices, k, lambda_):
     
     # calculate the loss for test data
     loss_te = compute_loss(y_test, x_test, w_opt)
-    #print("Training: ", loss_tr, ", Test: ", loss_te)
+    
     return loss_tr, loss_te
 
 def run_ridge_regression(y, x, lambdas=np.logspace(-10, 10, 30), k_fold=4, seeds=np.array([1])):
@@ -50,9 +50,8 @@ def run_ridge_regression(y, x, lambdas=np.logspace(-10, 10, 30), k_fold=4, seeds
             for index_lambda, lambda_ in enumerate(lambdas):
                 losses_tr[k, index_lambda], losses_te[k, index_lambda] = cross_validation(y, x, k_indices, k, lambda_)
 
-        # Mean for each lambda: should the mean be computer on losses_tr or np.sqrt(2*losses_tr) ?
-        rmse_tr[index_seed] = np.sqrt(2 * np.mean(losses_tr, axis=0))
-        rmse_te[index_seed] = np.sqrt(2 * np.mean(losses_te, axis=0))
+        rmse_tr[index_seed] = np.mean(np.sqrt(2 * losses_tr), axis=0)
+        rmse_te[index_seed] = np.mean(np.sqrt(2 * losses_te), axis=0)
 
 
     # Plot the mean of training and test RMSE for every (seed, lambda) pair as-well as the mean over all seeds
