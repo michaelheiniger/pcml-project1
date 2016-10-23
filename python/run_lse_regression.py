@@ -57,4 +57,4 @@ def run_least_squares(y, x, degrees = np.arange(0,11), k_fold=4, seeds=np.array(
 
 
     # Plot the mean of training and test RMSE for every (seed, degree) pair as-well as the mean over all seeds
-    bias_variance_decomposition_visualization_ridge(degrees, rmse_tr, rmse_te)
+    bias_variance_decomposition_visualization(degrees, rmse_tr, rmse_te)
