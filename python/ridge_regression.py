@@ -4,7 +4,7 @@ import numpy as np
 from costs import compute_loss_ridge
 
 def ridge_regression(y, tx, lamb):
-    """implement ridge regression.
+    """ Implements ridge regression.
        Note: to avoid conflict or inconsistencies between regression methods, 
        a python function compute_loss_ridge has been written explicity and only for ridge regression
        in costs.py"""
