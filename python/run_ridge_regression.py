@@ -1,5 +1,5 @@
 import numpy as np
-from costs import compute_loss
+from costs import compute_loss_ridge
 from ridge_regression import ridge_regression
 from build_polynomial import build_poly
 from build_k_indices import build_k_indices
@@ -16,43 +16,32 @@ def cross_validation(y, x, k_indices, k, lambda_):
     loss_tr, w_opt = ridge_regression(y_training, x_training, lambda_)
     
     # calculate the loss for test data
-    loss_te = compute_loss(y_test, x_test, w_opt)
+    loss_te = compute_loss_ridge(y_test, x_test, w_opt)
     
-    return loss_tr, loss_te
+    rmse_tr = np.sqrt(2*loss_tr)
+    rmse_te = np.sqrt(2*loss_te)
+    
+    return rmse_tr, rmse_te
 
-def run_ridge_regression(y, x, lambdas=np.logspace(-10, 10, 30), k_fold=4, seeds=np.array([1])):
-    """ Perform Ridge regression using k-fold cross-validation and plot the training and test error.
-        By default, the seed is 1 and the whole cross-validation process is done only once and the result is then plotted.
-        A list of seeds can be provided to do several (i.e. the number of seeds) times the whole cross-validation process.
-        This would result in a bias-variance decomposition plot (see last part of lab 4)
-        Note: A high number of seeds could induce a prohibitive computation time (around 10min for 100 seeds on my laptop) !
+def run_ridge_regression(y, x, lambdas=np.logspace(-10, 10, 30), k_fold=10, seed=1, filename="bias_var_decom_ridge"):
+    """ Perform Ridge regression using k-fold cross-validation and plot the training and test error. By default, the seed is 1 and the whole cross-validation process is done only once and the result is then plotted.
     """
     if k_fold <= 1:
         raise ValueError('The value of k_fold must be larger or equal to 2.')
 
+    np.random.seed(seed)
 
-    """ Store the mean of training and test RMSE for every (seed,lambda) pair.
-        The values are the output of the cross-validation process (see below)
-    """
-    rmse_tr = np.empty((len(seeds), len(lambdas)))
-    rmse_te = np.empty((len(seeds), len(lambdas)))
+    k_indices = build_k_indices(y, k_fold, seed)
 
-    for index_seed, seed in enumerate(seeds):
-        np.random.seed(seed)
+    rmse_tr = np.zeros((k_fold, len(lambdas)))
+    rmse_te = np.zeros((k_fold, len(lambdas)))
 
-        k_indices = build_k_indices(y, k_fold, seed)
-
-        losses_tr = np.zeros((k_fold, len(lambdas)))
-        losses_te = np.zeros((k_fold, len(lambdas)))
-
-        # K-fold cross-validation of ridge regression:
-        for k in range(0, k_fold):
-            for index_lambda, lambda_ in enumerate(lambdas):
-                losses_tr[k, index_lambda], losses_te[k, index_lambda] = cross_validation(y, x, k_indices, k, lambda_)
-
-        rmse_tr[index_seed] = np.mean(np.sqrt(2 * losses_tr), axis=0)
-        rmse_te[index_seed] = np.mean(np.sqrt(2 * losses_te), axis=0)
+    # K-fold cross-validation:
+    for k in range(0, k_fold):
+        for index_lambda, lambda_ in enumerate(lambdas):
+            rmse_tr[k, index_lambda], rmse_te[k, index_lambda] = cross_validation(y, x, k_indices, k, lambda_)
 
 
-    # Plot the mean of training and test RMSE for every (seed, lambda) pair as-well as the mean over all seeds
-    bias_variance_decomposition_visualization_ridge(lambdas, rmse_tr, rmse_te)
+    # Plot the training and test RMSE for every (k, lambda) pair as-well as the mean over all k
+    bias_variance_decomposition_visualization_ridge(lambdas, rmse_tr, rmse_te, filename)
+

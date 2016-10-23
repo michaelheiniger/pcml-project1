@@ -68,10 +68,11 @@ def bias_variance_decomposition_visualization(degrees, rmse_tr, rmse_te):
     plt.title("Bias-Variance Decomposition")
     plt.savefig("bias_variance")
     
-def bias_variance_decomposition_visualization_ridge(lambdas, rmse_tr, rmse_te):
+def bias_variance_decomposition_visualization_ridge(lambdas, rmse_tr, rmse_te, filename):
     """visualize the bias variance decomposition."""
     rmse_tr_mean = np.expand_dims(np.mean(rmse_tr, axis=0), axis=0)
     rmse_te_mean = np.expand_dims(np.mean(rmse_te, axis=0), axis=0)
+ 
     plt.plot(
         lambdas,
         rmse_tr.T,
@@ -106,4 +107,5 @@ def bias_variance_decomposition_visualization_ridge(lambdas, rmse_tr, rmse_te):
     plt.legend(loc=2)
     plt.grid(True)
     plt.title("Bias-Variance Decomposition")
-    plt.savefig("bias_variance")
+    plt.savefig(filename)
+    plt.clf() # needed in case of consecutive call of this function to avoid stacking unrelated plots 
