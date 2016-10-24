@@ -15,16 +15,17 @@ def cross_validation_visualization(lambds, mse_tr, mse_te):
     plt.grid(True)
     plt.savefig("cross_validation")
     
-def cross_validation_visualization_lse(degrees, mse_tr, mse_te):
-    """visualization the curves of mse_tr and mse_te."""
-    plt.semilogx(degrees, mse_tr, marker=".", color='b', label='train error')
-    plt.semilogx(degrees, mse_te, marker=".", color='r', label='test error')
+def cross_validation_visualization_lse(degrees, rmse_tr, rmse_te, filename):
+    """visualization the curves of rmse_tr and rmse_te."""
+    plt.semilogx(degrees, rmse_tr, marker=".", color='b', label='train error')
+    plt.semilogx(degrees, rmse_te, marker=".", color='r', label='test error')
     plt.xlabel("degree")
     plt.ylabel("rmse")
     plt.title("cross validation")
     plt.legend(loc=2)
     plt.grid(True)
-    plt.savefig("cross_validation_lse")
+    plt.savefig(filename)
+    plt.clf() # needed in case of consecutive call of this function to avoid stacking unrelated plots 
 
 
 def bias_variance_decomposition_visualization(degrees, rmse_tr, rmse_te):
