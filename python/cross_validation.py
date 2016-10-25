@@ -1,7 +1,8 @@
 import numpy as np
 from costs import compute_loss
-from build_polynomial import build_poly
-from regression_functions import *
+from feature_transformation import build_poly
+from ridge_regression import *
+from helpers import build_k_indices
 
 
 def cross_validation_step(y, x, k_indices, k, degree, lambda_):
@@ -84,12 +85,4 @@ def get_best_degree(y, x, degrees, k_fold, lambdas):
     return degrees[mask], best_lambdas[mask], np.min(min_errors)
 
 
-def build_k_indices(y, k_fold, seed):
-    """build k indices for k-fold."""
-    num_row = y.shape[0]
-    interval = int(num_row / k_fold)
-    np.random.seed(seed)
-    indices = np.random.permutation(num_row)
-    k_indices = [indices[k * interval: (k + 1) * interval]
-                 for k in range(k_fold)]
-    return np.array(k_indices)
+

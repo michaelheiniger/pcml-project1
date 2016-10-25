@@ -1,56 +1,49 @@
-
 import numpy as np
-from plots import bias_variance_decomposition_visualization
-from split_data import split_data
-from least_squares import least_squares
 from costs import compute_loss
-from build_polynomial import build_poly
-
-def run_lse(y, x, degree):
-    
-    seed = 1
-    ratio_train = 0.8
-    x_training, y_training, x_test, y_test = split_data(x, y, ratio_train, seed)
-    phi_training = build_poly(x_training, degree)
-    phi_test = build_poly(x_test, degree)
-    
-    loss_tr, w_opt = least_squares(y_training, phi_training)
-    loss_te = compute_loss(y_test, phi_test, w_opt)
-    
-    return loss_te, w_opt
+from least_squares import least_squares
+from feature_transformation import build_poly_matrix
+from helpers import build_k_indices
+from plots import cross_validation_visualization_lse
 
 
-def run_lse_regression_bias_var(y, x):
-    seeds = range(100)
-    ratio_train = 0.5
-    degrees = range(1, 10)
+def cross_validation(y, x, k_indices, k):
+    """return the loss of least squares."""
+    # get k'th subgroup in test, others in train    
+    indices_for_test = k_indices[k]
+    x_test, y_test = x[indices_for_test], y[indices_for_test]
+    x_training, y_training = np.delete(x, indices_for_test, axis=0), np.delete(y, indices_for_test, axis=0)
 
-    # define list to store the variable
-    rmse_tr = np.empty((len(seeds), len(degrees)))
-    rmse_te = np.empty((len(seeds), len(degrees)))
-    
-    for index_seed, seed in enumerate(seeds):
-        np.random.seed(seed)
-        # split data with a specific seed
-        x_training, y_training, x_test, y_test = split_data(x, y, ratio_train, seed)
-        
-        # bias_variance_decomposition
+    # least_squares
+    loss_tr, w_opt = least_squares(y_training, x_training)
+
+    # calculate the loss for test data
+    loss_te = compute_loss(y_test, x_test, w_opt)
+
+    rmse_tr = np.sqrt(2 * loss_tr)
+    rmse_te = np.sqrt(2 * loss_te)
+
+    return rmse_tr, rmse_te
+
+
+def run_least_squares(y, x, degrees=np.arange(0, 11), k_fold=4, seed=1, filename="cross_validation_lse"):
+    """ Perform Least Squares using k-fold cross-validation and plot the training and test error.
+        By default, the seed is 1 and the whole cross-validation process is done only once and the result is then plotted.
+    """
+    if k_fold <= 1:
+        raise ValueError('The value of k_fold must be larger or equal to 2.')
+
+    np.random.seed(seed)
+
+    k_indices = build_k_indices(y, k_fold, seed)
+
+    rmse_tr = np.zeros((k_fold, len(degrees)))
+    rmse_te = np.zeros((k_fold, len(degrees)))
+
+    # K-fold cross-validation of least_squares for every degree:
+    for k in range(0, k_fold):
         for index_degree, degree in enumerate(degrees):
-            phi_training = build_poly(x_training, degree)
-            phi_test = build_poly(x_test, degree)
-            loss_tr, w_opt = least_squares(y_training, phi_training)
-            loss_te = compute_loss(y_test, phi_test, w_opt)
-            #print("Tr: ", loss_tr, "Te: ", loss_te)
-            rmse_tr[index_seed, index_degree] = np.sqrt(2*loss_tr)
-            rmse_te[index_seed, index_degree] = np.sqrt(2*loss_te)
+            phi = build_poly_matrix(np.copy(x), degree)
+            rmse_tr[k, index_degree], rmse_te[k, index_degree] = cross_validation(y, phi, k_indices, k)
 
-    bias_variance_decomposition_visualization(degrees, rmse_tr, rmse_te)
-    
-    rmse_te_mean = np.expand_dims(np.mean(rmse_te, axis=0), axis=0)
-    rmse_te_min_index = np.argmin(rmse_te_mean)
-    degree_min = degrees[rmse_te_min_index]
-    print(rmse_te_mean.shape)
-    print(rmse_te_min_index)
-    rmse_te_min = rmse_te_mean[0,rmse_te_min_index]
-    return rmse_te_min, degree_min
-        
+    # Plot the mean of training and test RMSE for every degree
+    cross_validation_visualization_lse(degrees, np.mean(rmse_tr, axis=0), np.mean(rmse_te, axis=0), filename)
