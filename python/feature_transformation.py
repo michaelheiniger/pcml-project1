@@ -9,24 +9,20 @@ def build_poly(x, degree):
     return phi
 
 
-def build_poly_matrix(tx, degree):  # TODO: rewrite in the style of functions below?
-    """polynomial basis function (without cross-terms) for input data x,
-    the returned matrix is of the form [1 x^1 ... x^(degree)]"""
-    rows = tx.shape[0]
-    cols = int(tx.size / rows)
-    dummy = np.copy(tx)  # don't copy the first column of 1's
+def build_poly_matrix(tx, degree):
+    """polynomial basis function (without cross-terms) for input data tx, where the first column of tx is the
+        all-one vector. The matrix x is then the matrix without the first column and the returned matrix is of
+        the form [1 x^1 ... x^(degree)]"""
+    
+    dummy = np.copy(tx[:, 1:])  # don't copy the first column of 1's
+    augmented_tx = np.copy(tx)
+    
+    # concatenate the powers of 'dummy' with the original matrix
+    if degree >=2:
+        for d in range(2,degree+1):
+            augmented_tx = np.concatenate((augmented_tx, np.power(dummy, d)), axis =1)
 
-    if cols == 1:  # add a second dimension to 1D array
-        dummy = np.reshape(dummy, (rows, 1))
-
-    # fill phi with the powers of tx
-    phi = np.empty((rows, cols * degree + 1))
-
-    # Add a column of one at the first position (offset)
-    phi[:, 0] = np.ones((1, rows))
-    for d in range(0, degree):
-        phi[:, 1 + d * cols: 1 + (d + 1) * cols] = np.power(dummy, d + 1)
-    return phi
+    return augmented_tx
 
 
 def add_cos_function(tx):
