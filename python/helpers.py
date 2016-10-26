@@ -11,7 +11,7 @@ def sigmoid(t):
     #prevent over/underflow by assigning the limits of the sigmoid for large values of t
     result[id_pos] = 1.
     result[id_neg] = 0.
-    result[id_rest] = np.divide(1, np.add(1, np.exp(-t)))
+    result[id_rest] = np.divide(1, np.add(1, np.exp(-t[id_rest])))
     return result
 
 def build_k_indices(y, k_fold, seed):
