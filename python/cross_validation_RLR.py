@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from reg_logistic_regression import reg_logistic_regression, calculate_loss_reg_logistic_regression
-
+from helpers import build_k_indices
+from reg_logistic_regression import reg_logistic_regression, compute_log_likelihood_penalized
 
 def cross_validation_visualization(lambds, loss_tr, loss_te):
     """visualization the curves of mse_tr and mse_te."""
@@ -26,7 +26,7 @@ def cross_validation(y, x, k_indices, k, lambda_, gamma, max_iters):
     loss_tr, w_opt = reg_logistic_regression(y_training, x_training, lambda_, gamma, max_iters)
 
     # calculate the loss for test data
-    loss_te = calculate_loss_reg_logistic_regression(y_test, x_test, w_opt, lambda_)
+    loss_te = compute_log_likelihood_penalized(y_test, x_test, w_opt, lambda_)
 
     return loss_tr, loss_te
 
