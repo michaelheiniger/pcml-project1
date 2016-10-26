@@ -41,6 +41,9 @@ def compute_log_likelihood(y, tx, w):
         # prevent overflow by assuming log(1+exp(k)) = k ,for large k
         if y_est > 100: 
             loss += y_est - y[i] * y_est
+        # prevent underflow by settin log(1+(exp(k)) = 0 for large negative k
+        elif y_est < -100:
+            loss += - y[i] * y_est
         else:
             loss +=  np.log(1 + np.exp(y_est)) - y[i] * y_est
     return loss
