@@ -3,6 +3,16 @@
 import numpy as np
 import math
 
+def sigmoid(t):
+    result = np.empty(np.shape(t))
+    id_pos = t > 100
+    id_neg = t < -100
+    id_rest = np.logical_and(-100 <= t , t <= 100)
+    #prevent over/underflow by assigning the limits of the sigmoid for large values of t
+    result[id_pos] = 1.
+    result[id_neg] = 0.
+    result[id_rest] = np.divide(1, np.add(1, np.exp(-t)))
+    return result
 
 def build_k_indices(y, k_fold, seed):
     """build k indices for k-fold cross-validation."""
