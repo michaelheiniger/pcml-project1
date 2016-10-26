@@ -25,6 +25,7 @@ def build_poly_matrix(tx, degree):
     return augmented_tx
 
 
+
 def add_cos_function(tx):
     """ Augment the matrix tx with the cos of all its features: new_tx = [tx, cos(tx)] """
 
