@@ -1,6 +1,6 @@
 import numpy as np
 from costs import compute_loss_ridge
-from ridge_regression import ridge_regression
+from implementations import ridge_regression
 from feature_transformation import build_poly
 from helpers import build_k_indices
 from plots import bias_variance_decomposition_visualization_ridge
