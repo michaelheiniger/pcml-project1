@@ -73,7 +73,10 @@ def bias_variance_decomposition_visualization_ridge(lambdas, rmse_tr, rmse_te, f
     """visualize the bias variance decomposition."""
     rmse_tr_mean = np.expand_dims(np.mean(rmse_tr, axis=0), axis=0)
     rmse_te_mean = np.expand_dims(np.mean(rmse_te, axis=0), axis=0)
- 
+    
+    #rmse_tr_mean = np.divide(rmse_tr_mean, np.amax(rmse_tr_mean))
+    #rmse_te_mean = np.divide(rmse_te_mean, np.amax(rmse_tr_mean))
+    """
     plt.plot(
         lambdas,
         rmse_tr.T,
@@ -87,7 +90,7 @@ def bias_variance_decomposition_visualization_ridge(lambdas, rmse_tr, rmse_te, f
         'r',
         linestyle="-",
         color=[1, 0.7, 0.7],
-        linewidth=0.3)
+        linewidth=0.3)"""
     plt.plot(
         lambdas,
         rmse_tr_mean.T,
@@ -103,10 +106,13 @@ def bias_variance_decomposition_visualization_ridge(lambdas, rmse_tr, rmse_te, f
         label='mean test',
         linewidth=3)
     plt.xlabel("lambdas")
-    plt.ylabel("error")
+    plt.ylabel("RMSE")
     plt.xscale('log')
     plt.legend(loc=2)
     plt.grid(True)
     plt.title("Bias-Variance Decomposition")
     plt.savefig(filename)
     plt.clf() # needed in case of consecutive call of this function to avoid stacking unrelated plots 
+    
+    
+
