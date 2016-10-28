@@ -110,9 +110,41 @@ def bias_variance_decomposition_visualization_ridge(lambdas, rmse_tr, rmse_te, f
     plt.xscale('log')
     plt.legend(loc=2)
     plt.grid(True)
-    plt.title("Bias-Variance Decomposition")
+    plt.title("RMSE vs lambda")
     plt.savefig(filename)
     plt.clf() # needed in case of consecutive call of this function to avoid stacking unrelated plots 
+    
+    
+    
+def error_rate_visualization_ridge(lambdas, error_rate, filename):
+    """visualize error rate versus lambda."""
+    mean_error_rate = np.expand_dims(np.mean(error_rate, axis=0), axis=0)
+    
+    
+    plt.plot(
+        lambdas,
+        error_rate.T,
+        'b',
+        linestyle="-",
+        color=([0.7, 0.7, 1]),
+        linewidth=0.3)
+    
+    plt.plot(
+        lambdas,
+        mean_error_rate.T,
+        'b',
+        linestyle="-",
+        label='mean error rate',
+        linewidth=3)
+    plt.xlabel("lambdas")
+    plt.ylabel("Error rate")
+    plt.xscale('log')
+    plt.legend(loc=2)
+    plt.grid(True)
+    plt.title("Error rate versus lambda")
+    plt.savefig(filename)
+    plt.clf() # needed in case of consecutive call of this function to avoid stacking unrelated plots 
+    
     
     
 
