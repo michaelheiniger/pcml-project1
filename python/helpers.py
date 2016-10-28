@@ -59,6 +59,18 @@ def standardize(x, mean_x=None, std_x=None):
     tx = np.hstack((np.ones((x.shape[0], 1)), x))
     return tx, mean_x, std_x
 
+def standardize_test(x, mean_x, std_x): 
+    """standardizes the test dataset matrix"""
+    
+    for i in range(0, len(mean_x)):
+        x[:,i] -= mean_x[i]
+    for i in range(0, len(std_x)):
+        if std_x[i] > 0:
+            x[:,i] /= std_x[i]
+    tx = np.hstack((np.ones((x.shape[0], 1)), x))
+    return tx
+
+
 
 def batch_iter(y, tx, batch_size, num_batches=None, shuffle=True):
     """
