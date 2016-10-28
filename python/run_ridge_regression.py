@@ -1,10 +1,8 @@
 import numpy as np
 from costs import compute_loss_ridge
 from implementations import ridge_regression
-from feature_transformation import build_poly
 from helpers import build_k_indices
 from plots import bias_variance_decomposition_visualization_ridge
-
 
 def cross_validation(y, x, k_indices, k, lambda_):
     """return the loss of ridge regression."""
@@ -14,7 +12,7 @@ def cross_validation(y, x, k_indices, k, lambda_):
     x_training, y_training = np.delete(x, indices_for_test, axis=0), np.delete(y, indices_for_test, axis=0)
 
     # ridge regression
-    loss_tr, w_opt = ridge_regression(y_training, x_training, lambda_)
+    w_opt, loss_tr = ridge_regression(y_training, x_training, lambda_)
 
     # calculate the loss for test data
     loss_te = compute_loss_ridge(y_test, x_test, w_opt)
@@ -23,7 +21,6 @@ def cross_validation(y, x, k_indices, k, lambda_):
     rmse_te = np.sqrt(2 * loss_te)
 
     return rmse_tr, rmse_te
-
 
 def run_ridge_regression(y, x, lambdas=np.logspace(-10, 10, 30), k_fold=10, seed=1, filename="bias_var_decom_ridge"):
     """ Perform Ridge regression using k-fold cross-validation and plot the training and test error. By default, the seed is 1 and the whole cross-validation process is done only once and the result is then plotted.
