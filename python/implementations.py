@@ -165,12 +165,17 @@ def compute_log_likelihood(y, tx, w):
     """
     Computes maximum log likelihood estimator for logistic regression.
     To avoid floating-point overflows we substitute ln(1+exp{x}) with x, for x large enough.
+    To avoid underflows, we substitute ln(1 +exp{x}) with 0 for x small enough.
+
     """
     xw = tx.dot(w)
     p = xw > 50
+    q = xw < -50
     not_p = np.logical_not(p)
+    not_q = np.logical_not(q)
+    not_qp = np.logical_and(not_p, not_q)
     L = np.zeros(xw.shape)
-    L[p], L[not_p] = xw[p], np.log(1 + np.exp(xw[not_p]))
+    L[p], L[q], L[not_qp] = xw[p], 0 ,np.log(1 + np.exp(xw[not_qp]))
     return np.sum(L - np.multiply(y, xw))
 
 def compute_gradient_log_likelihood(y, tx, w):
@@ -219,12 +224,16 @@ def compute_log_likelihood_penalized(y, tx, w, lambda_):
     """ 
     Computes maximum log likelihood estimator for logistic regression.
     To avoid floating-point overflows we substitute ln(1+exp{x}) with x, for x large enough.
+    To avoid underflows, we substitute ln(1 +exp{x}) with 0 for x small enough.
     """
     xw = tx.dot(w)
     p = xw > 50
+    q = xw < -50
     not_p = np.logical_not(p)
+    not_q = np.logical_not(q)
+    not_qp = np.logical_and(not_p, not_q)
     L = np.zeros(xw.shape)
-    L[p], L[not_p] = xw[p], np.log(1 + np.exp(xw[not_p]))
+    L[p], L[q], L[not_qp] = xw[p], 0 ,np.log(1 + np.exp(xw[not_qp]))
     loss = np.sum(L - np.multiply(y, xw))
     
     # add the penalization term to the loss
