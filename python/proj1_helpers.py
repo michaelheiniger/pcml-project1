@@ -2,6 +2,7 @@
 """some helper functions for project 1."""
 import csv
 import numpy as np
+from helpers import sigmoid
 
 
 def load_csv_data(data_path, sub_sample=False):
@@ -25,10 +26,18 @@ def load_csv_data(data_path, sub_sample=False):
 
 
 def predict_labels(weights, data):
-    """Generates class predictions given weights, and a test data matrix"""
+    """Generates class predictions for linear prediction given weights, and a test data matrix"""
     y_pred = np.dot(data, weights)
     y_pred[np.where(y_pred <= 0)] = -1
     y_pred[np.where(y_pred > 0)] = 1
+    
+    return y_pred
+
+def predict_labels_LR(weights, data):
+    """Generates class predictions for logistic regression given weights, and a test data matrix"""
+    y_pred = sigmoid(np.dot(data, weights))
+    y_pred[np.where(y_pred <= 0.5)] = -1
+    y_pred[np.where(y_pred > 0.5)] = 1
     
     return y_pred
 
