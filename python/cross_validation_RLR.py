@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from helpers import build_k_indices
-from reg_logistic_regression import reg_logistic_regression, compute_log_likelihood_penalized
+from implementations import reg_logistic_regression, compute_log_likelihood_penalized
 
 def cross_validation_visualization(lambds, loss_tr, loss_te):
     """visualization the curves of mse_tr and mse_te."""
