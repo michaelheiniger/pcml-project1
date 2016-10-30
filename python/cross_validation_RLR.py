@@ -15,15 +15,15 @@ def cross_validation_visualization(lambds, loss_tr, loss_te):
     plt.savefig("cross_validation")
     
 
-def cross_validation(y, x, k_indices, k, lambda_, gamma, max_iters):
+def cross_validation(y, x, k_indices, k, lambda_, initial_w,gamma, max_iters):
     """return the loss of ridge regression."""
     # get k'th subgroup in test, others in train    
     indices_for_test = k_indices[k]
     x_test, y_test = x[indices_for_test], y[indices_for_test]
     x_training, y_training = np.delete(x, indices_for_test, axis=0), np.delete(y, indices_for_test, axis=0)
 
-    # ridge regression
-    loss_tr, w_opt = reg_logistic_regression(y_training, x_training, lambda_, gamma, max_iters)
+    # ridge regression 
+    w_opt, loss_tr = reg_logistic_regression(y_training, x_training, lambda_, initial_w, max_iters, gamma)
 
     # calculate the loss for test data
     loss_te = compute_log_likelihood_penalized(y_test, x_test, w_opt, lambda_)
@@ -31,7 +31,7 @@ def cross_validation(y, x, k_indices, k, lambda_, gamma, max_iters):
     return loss_tr, loss_te
 
 
-def run_reg_logistic_regression(y, x, gamma, max_iters, k_fold=4,lambdas=np.logspace(-3, 2, 20), 
+def run_reg_logistic_regression(y, x, initial_w ,gamma, max_iters, k_fold=4,lambdas=np.logspace(-3, 2, 20), 
                                 seed=1, filename="bias_var_decom_RLR"):
     """ Perform Regularized Logistic regression using k-fold cross-validation and plot the training and test error. 
     By default, the seed is 1 and the whole cross-validation process is done only 
@@ -50,7 +50,7 @@ def run_reg_logistic_regression(y, x, gamma, max_iters, k_fold=4,lambdas=np.logs
     # K-fold cross-validation:
     for k in range(0, k_fold):
         for index_lambda, lambda_ in enumerate(lambdas):
-            loss_tr[k, index_lambda], loss_te[k, index_lambda] = cross_validation(y, x, k_indices, k, lambda_,
+            loss_tr[k, index_lambda], loss_te[k, index_lambda] = cross_validation(y, x, k_indices, k, lambda_,initial_w,
                                                                                  gamma, max_iters)
 
     # Plot the mean training and test loss for every lambda 

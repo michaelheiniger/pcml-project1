@@ -139,7 +139,7 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     w = np.zeros((tx.shape[1], 1))
     losses = []
     #define batch_size
-    batch_size= 100
+    batch_size= 2000
 
     np.seterr(all='print')
     
@@ -152,7 +152,7 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
         w = np.subtract(w, np.multiply(gamma, grad))
         losses.append(loss)
         
-        if iter % 10 == 0:
+        if iter % 50 == 0:
             print("Current iteration={i}, the loss={l}".format(i=iter, l=loss))
         
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < 1e-8:
@@ -197,7 +197,7 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     losses = []
     
     #define batch_size
-    batch_size= 100
+    batch_size= 2000
 
     np.seterr(all='print')
     
@@ -235,9 +235,8 @@ def compute_log_likelihood_penalized(y, tx, w, lambda_):
     L = np.zeros(xw.shape)
     L[p], L[q], L[not_qp] = xw[p], 0 ,np.log(1 + np.exp(xw[not_qp]))
     loss = np.sum(L - np.multiply(y, xw))
-    
     # add the penalization term to the loss
-    return np.add(loss, lambda_ * w.transpose().dot(w))
+    return np.add(loss, lambda_ * np.sum(w.transpose().dot(w)))
 
 
 def compute_gradient_log_likelihood_penalized(y, tx, w, lambda_):
