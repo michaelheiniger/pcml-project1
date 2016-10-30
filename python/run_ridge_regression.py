@@ -1,10 +1,9 @@
 import numpy as np
 from costs import compute_loss_ridge
 from implementations import ridge_regression
-from feature_transformation import build_poly
-from helpers import build_k_indices
-from plots import bias_variance_decomposition_visualization_ridge
-
+from helpers import *
+from proj1_helpers import *
+from plots import *
 
 def cross_validation(y, x, k_indices, k, lambda_):
     """return the loss of ridge regression."""
@@ -14,16 +13,19 @@ def cross_validation(y, x, k_indices, k, lambda_):
     x_training, y_training = np.delete(x, indices_for_test, axis=0), np.delete(y, indices_for_test, axis=0)
 
     # ridge regression
-    loss_tr, w_opt = ridge_regression(y_training, x_training, lambda_)
+    w_opt, loss_tr = ridge_regression(y_training, x_training, lambda_)
 
     # calculate the loss for test data
     loss_te = compute_loss_ridge(y_test, x_test, w_opt)
 
     rmse_tr = np.sqrt(2 * loss_tr)
     rmse_te = np.sqrt(2 * loss_te)
+    
+    y_pred = predict_labels(w_opt, x_test)
+    
+    error_rate = (y_pred != y_test).sum()/len(y_pred)
 
-    return rmse_tr, rmse_te
-
+    return rmse_tr, rmse_te, error_rate
 
 def run_ridge_regression(y, x, lambdas=np.logspace(-10, 10, 30), k_fold=10, seed=1, filename="bias_var_decom_ridge"):
     """ Perform Ridge regression using k-fold cross-validation and plot the training and test error. By default, the seed is 1 and the whole cross-validation process is done only once and the result is then plotted.
@@ -37,11 +39,13 @@ def run_ridge_regression(y, x, lambdas=np.logspace(-10, 10, 30), k_fold=10, seed
 
     rmse_tr = np.zeros((k_fold, len(lambdas)))
     rmse_te = np.zeros((k_fold, len(lambdas)))
+    error_rate = np.zeros((k_fold, len(lambdas)))
 
     # K-fold cross-validation:
     for k in range(0, k_fold):
         for index_lambda, lambda_ in enumerate(lambdas):
-            rmse_tr[k, index_lambda], rmse_te[k, index_lambda] = cross_validation(y, x, k_indices, k, lambda_)
+            rmse_tr[k, index_lambda], rmse_te[k, index_lambda], error_rate[k, index_lambda] = cross_validation(y, x, k_indices, k, lambda_)
 
     # Plot the training and test RMSE for every (k, lambda) pair as-well as the mean over all k
-    bias_variance_decomposition_visualization_ridge(lambdas, rmse_tr, rmse_te, filename)
+    #bias_variance_decomposition_visualization_ridge(lambdas, rmse_tr, rmse_te, filename)
+    error_rate_visualization_ridge(lambdas, error_rate, filename)
