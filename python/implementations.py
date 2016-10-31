@@ -56,7 +56,7 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
 
     # initialization of the weights with zeros
     w_initial = np.array(np.zeros(tx.shape[1]))
-    batch_size = 1
+    batch_size = 2000
     # get the losses and weights for every iteration
     losses, ws = stochastic_gradient_descent(y, tx, w_initial, batch_size, max_iters, gamma)
     # take the best values
@@ -139,7 +139,7 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     w = np.zeros((tx.shape[1], 1))
     losses = []
     #define batch_size
-    batch_size= 100
+    batch_size= 2000
 
     np.seterr(all='print')
     
@@ -197,7 +197,7 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     losses = []
     
     #define batch_size
-    batch_size= 100
+    batch_size= 2000
 
     np.seterr(all='print')
     
@@ -301,6 +301,7 @@ def batch_iter(y, tx, batch_size, num_batches=None, shuffle=True):
             yield shuffled_y[start_index:end_index], shuffled_tx[start_index:end_index]
 
 def sigmoid(t):
+    """returns the sigmoid function of every element in t"""
     result = np.empty(np.shape(t))
     id_pos = t > 100
     id_neg = t < -100
