@@ -2,7 +2,7 @@ import numpy as np
 
 
 def build_poly(x, degree):
-    """polynomial basis functions for input data x, for j=0 up to j=degree."""
+    """ Polynomial basis functions for input data x, for j=0 up to j=degree."""
     phi = np.zeros((x.shape[0], degree + 1))
     for d in range(0, degree + 1):
         phi[:, d] = np.power(x, d)
@@ -24,64 +24,57 @@ def build_poly_matrix(tx, degree):
 
     return augmented_tx
 
-
-
 def add_cos_function(tx):
     """ Augment the matrix tx with the cos of all its features: new_tx = [tx, cos(tx)] """
 
-    copy_tx = np.copy(tx[:, 1:])  # don't copy the first column of 1's
+    # Remove the column of 1's and take only the raw features 
+    # (in case there are functions of features in [:,31:end])
+    copy_tx = np.copy(tx[:,1:31])
     cos_tx = np.cos(copy_tx)
     augmented_tx = np.concatenate((tx, cos_tx), axis=1)
-
     return augmented_tx
 
 def add_sin_function(tx):
     """ Augment the matrix tx with the sin of all its features: new_tx = [tx, sin(tx)] """
 
-    copy_tx = np.copy(tx[:, 1:])  # don't copy the first column of 1's
+    # Remove the column of 1's and take only the raw features 
+    # (in case there are functions of features in [:,31:end])
+    copy_tx = np.copy(tx[:,1:31])
     sin_tx = np.sin(copy_tx)
     augmented_tx = np.concatenate((tx, sin_tx), axis=1)
-
     return augmented_tx
 
 
 def add_exp_function(tx):
     """ Augment the matrix tx with the exp of all its features: new_tx = [tx, exp(tx)] """
 
-    copy_tx = np.copy(tx[:, 1:])  # don't copy the first column of 1's
+    # Remove the column of 1's and take only the raw features 
+    # (in case there are functions of features in [:,31:end])
+    copy_tx = np.copy(tx[:,1:31])
     exp_tx = np.exp(copy_tx)
     augmented_tx = np.concatenate((tx, exp_tx), axis=1)
+    return augmented_tx
 
+def add_tan_function(tx):
+    """ Augment the matrix tx with the tan of all its features: new_tx = [tx, tan(tx)] """
+
+    # Remove the column of 1's and take only the raw features 
+    # (in case there are functions of features in [:,31:end])
+    copy_tx = np.copy(tx[:,1:31])
+    tan_tx = np.tan(copy_tx)
+    augmented_tx = np.concatenate((tx, tan_tx), axis=1)
     return augmented_tx
 
 
 def add_sinc_function(tx):
     """ Augment the matrix tx with the sinc of all its features: new_tx = [tx, sinc(tx)] """
 
-    copy_tx = np.copy(tx[:, 1:])  # don't copy the first column of 1's
+    # Remove the column of 1's and take only the raw features 
+    # (in case there are functions of features in [:,31:end])
+    copy_tx = np.copy(tx[:,1:31])
     sinc_tx = np.sinc(copy_tx)
     augmented_tx = np.concatenate((tx, sinc_tx), axis=1)
-
     return augmented_tx
-
-def add_sinc_function(tx):
-    """ Augment the matrix tx with the sinc of all its features: new_tx = [tx, sinc(tx)] """
-
-    copy_tx = np.copy(tx[:, 1:])  # don't copy the first column of 1's
-    sinc_tx = np.sinc(copy_tx)
-    augmented_tx = np.concatenate((tx, sinc_tx), axis=1)
-
-    return augmented_tx
-
-def add_functions(tx):
-    
-    copy_tx = np.copy(tx[:,1:])
-    cos_tx = np.cos(copy_tx)
-    sinc_tx = np.sinc(copy_tx)
-    augmented_tx = np.concatenate((tx, cos_tx, sinc_tx), axis=1)
-    return augmented_tx
-
-
 
 
 
